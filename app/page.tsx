@@ -1,65 +1,114 @@
+"use client";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useApp } from "./context/AppContext";
+import ProgressStepper from "./components/ProgressStepper";
+
+const colors = [
+  { name: "Coral", value: "coral", hex: "#FF7F50" },
+  { name: "Lavender", value: "lavender", hex: "#E6E6FA" },
+  { name: "Mint", value: "mint", hex: "#98FB98" },
+  { name: "Sunshine", value: "sunshine", hex: "#FFD700" },
+  { name: "Sky Blue", value: "sky-blue", hex: "#87CEEB" },
+  { name: "Peach", value: "peach", hex: "#FFDAB9" },
+  { name: "Rose", value: "rose", hex: "#FFB6C1" },
+  { name: "Sage", value: "sage", hex: "#9DC183" },
+];
 
 export default function Home() {
+  const router = useRouter();
+  const { selectedColor, setSelectedColor } = useApp();
+
+  const handleContinue = () => {
+    if (selectedColor) {
+      router.push("/upload");
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-linear-to-b from-purple-50/30 via-white to-white">
+      <div className="container mx-auto px-4 py-8">
+        {/* Logo */}
+        <div className="flex justify-center mb-8">
+          <Image
+            src="/crochet-studio-logo.png"
+            alt="Crochet Studio"
+            width={200}
+            height={60}
+            className="h-auto"
+            priority
+          />
+        </div>
+
+        {/* Title and Subtitle */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">
+            Try On Your Perfect Bandana
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-lg text-gray-600">
+            See how you'll look in our handmade crochet bandanas
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* Progress Stepper */}
+        <ProgressStepper currentStep={1} />
+
+        {/* Main Card */}
+        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            Step 1: Choose Your Color
+          </h2>
+          <p className="text-gray-600 mb-8">
+            Select the bandana color you'd like to try on
+          </p>
+
+          {/* Color Grid */}
+          <div className="grid grid-cols-4 gap-6 mb-8">
+            {colors.map((color) => (
+              <button
+                key={color.value}
+                onClick={() => setSelectedColor(color.value)}
+                className={`flex flex-col items-center gap-2 transition-all ${
+                  selectedColor === color.value
+                    ? "scale-110"
+                    : "hover:scale-105"
+                }`}
+              >
+                <div
+                  className={`w-20 h-20 rounded-full border-4 transition-all ${
+                    selectedColor === color.value
+                      ? "border-purple-500 shadow-lg ring-4 ring-purple-200"
+                      : "border-gray-200 hover:border-gray-300"
+                  }`}
+                  style={{ backgroundColor: color.hex }}
+                />
+                <span className="text-sm font-medium text-gray-700">
+                  {color.name}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {/* Continue Button */}
+          <button
+            onClick={handleContinue}
+            disabled={!selectedColor}
+            className={`w-full py-3 px-6 rounded-full font-semibold transition-all ${
+              selectedColor
+                ? "bg-linear-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 shadow-lg hover:shadow-xl"
+                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+            }`}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            Continue
+          </button>
         </div>
-      </main>
+
+        {/* Footer */}
+        <div className="text-center mt-12 text-sm text-gray-500">
+          Made with love by Crochet Studio
+        </div>
+      </div>
     </div>
   );
 }
