@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import fs from 'fs';
+import path from 'path';
+
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY!);
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,23 +18,60 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Integrate with Nano Banana Pro API here
-    // Example structure:
-    // const response = await fetch('https://api.nanobananapro.com/...', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Authorization': `Bearer ${process.env.NANO_BANA_PRO_API_KEY}`,
-    //   },
-    //   body: formData,
-    // });
-    // const data = await response.json();
-    // return NextResponse.json({ imageUrl: data.resultUrl });
+    // Load the default crochet design image
+    const designImagePath = path.join(process.cwd(), 'public', 'crochet-design.jpg');
+    const designImageBuffer = fs.readFileSync(designImagePath);
+    const designBase64 = designImageBuffer.toString('base64');
 
-    // Placeholder response for now
-    return NextResponse.json(
-      { error: 'API integration pending' },
-      { status: 501 }
-    );
+    // Convert user's image to base64
+    const arrayBuffer = await image.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString('base64');
+
+    // Get the generative model
+    const model = genAI.getGenerativeModel({ model: 'imagen-3.0-generate-001' });
+
+    // Generate content with image and prompt
+    const content = [
+      `Generate an image of this person wearing a ${color} crochet bandana with the specific crochet pattern shown in the reference image. Use only this exact pattern for the bandana design.`,
+      {
+        inlineData: {
+          mimeType: image.type,
+          data: base64,
+        },
+      },
+      `Reference crochet pattern:`,
+      {
+        inlineData: {
+          mimeType: 'image/jpeg',
+          data: designBase64,
+        },
+      },
+    ];
+
+    const result = await model.generateContent(content);
+
+    const response = await result.response;
+    const candidates = response.candidates;
+
+    if (candidates && candidates.length > 0 && candidates[0].content) {
+      const parts = candidates[0].content.parts;
+
+      if (parts && parts.length > 0 && parts[0].inlineData) {
+        const imageData = parts[0].inlineData;
+        const imageUrl = `data:${imageData.mimeType};base64,${imageData.data}`;
+        return NextResponse.json({ imageUrl });
+      } else {
+        return NextResponse.json(
+          { error: 'Failed to generate image' },
+          { status: 500 }
+        );
+      }
+    } else {
+      return NextResponse.json(
+        { error: 'No candidates in response' },
+        { status: 500 }
+      );
+    }
   } catch (error) {
     console.error('Error in generate API:', error);
     return NextResponse.json(
@@ -38,4 +80,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

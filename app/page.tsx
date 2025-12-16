@@ -47,7 +47,7 @@ export default function Home() {
             Try On Your Perfect Bandana
           </h1>
           <p className="text-lg text-gray-600">
-            See how you'll look in our handmade crochet bandanas
+            See how you&apos;ll look in our handmade crochet bandanas
           </p>
         </div>
 
@@ -60,7 +60,7 @@ export default function Home() {
             Step 1: Choose Your Color
           </h2>
           <p className="text-gray-600 mb-8">
-            Select the bandana color you'd like to try on
+            Select the bandana color you&apos;d like to try on
           </p>
 
           {/* Color Grid */}

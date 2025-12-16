@@ -1,27 +1,34 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useApp } from '../context/AppContext';
-import ProgressStepper from '../components/ProgressStepper';
-import { useState, useEffect } from 'react';
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useApp } from "../context/AppContext";
+import ProgressStepper from "../components/ProgressStepper";
+import { useState, useEffect } from "react";
 
 export default function PreviewPage() {
   const router = useRouter();
-  const { selectedColor, uploadedImage, generatedImage, setGeneratedImage } = useApp();
+  const { selectedColor, uploadedImage, generatedImage, setGeneratedImage } =
+    useApp();
   const [isGenerating, setIsGenerating] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
 
   useEffect(() => {
     if (uploadedImage) {
-      setPreview(URL.createObjectURL(uploadedImage));
+      const objectUrl = URL.createObjectURL(uploadedImage);
+      setPreview(objectUrl);
+
+      // Cleanup: revoke the blob URL when component unmounts or uploadedImage changes
+      return () => {
+        URL.revokeObjectURL(objectUrl);
+      };
     }
   }, [uploadedImage]);
 
   // Redirect if no color or image selected
   useEffect(() => {
     if (!selectedColor || !uploadedImage) {
-      router.push('/');
+      router.push("/");
     }
   }, [selectedColor, uploadedImage, router]);
 
@@ -29,17 +36,17 @@ export default function PreviewPage() {
     if (!uploadedImage || !selectedColor) return;
 
     setIsGenerating(true);
-    
+
     try {
       // TODO: Integrate with Nano Banana Pro API
       // For now, we'll simulate the API call
       const formData = new FormData();
-      formData.append('image', uploadedImage);
-      formData.append('color', selectedColor);
+      formData.append("image", uploadedImage);
+      formData.append("color", selectedColor);
 
       // Replace this with actual Nano Banana Pro API call
-      const response = await fetch('/api/generate', {
-        method: 'POST',
+      const response = await fetch("/api/generate", {
+        method: "POST",
         body: formData,
       });
 
@@ -47,10 +54,10 @@ export default function PreviewPage() {
         const data = await response.json();
         setGeneratedImage(data.imageUrl);
       } else {
-        console.error('Failed to generate image');
+        console.error("Failed to generate image");
       }
     } catch (error) {
-      console.error('Error generating image:', error);
+      console.error("Error generating image:", error);
     } finally {
       setIsGenerating(false);
     }
@@ -58,15 +65,15 @@ export default function PreviewPage() {
 
   const handleDownload = () => {
     if (generatedImage) {
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = generatedImage;
-      link.download = 'bandana-preview.jpg';
+      link.download = "bandana-preview.jpg";
       link.click();
     }
   };
 
   const handleStartOver = () => {
-    router.push('/');
+    router.push("/");
   };
 
   if (!selectedColor || !uploadedImage) {
@@ -94,7 +101,7 @@ export default function PreviewPage() {
             Try On Your Perfect Bandana
           </h1>
           <p className="text-lg text-gray-600">
-            See how you'll look in our handmade crochet bandanas
+            See how you&apos;ll look in our handmade crochet bandanas
           </p>
         </div>
 
@@ -115,7 +122,9 @@ export default function PreviewPage() {
             {isGenerating ? (
               <div className="flex flex-col items-center justify-center py-16">
                 <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-500 border-t-transparent mb-4"></div>
-                <p className="text-gray-600">Generating your bandana preview...</p>
+                <p className="text-gray-600">
+                  Generating your bandana preview...
+                </p>
               </div>
             ) : generatedImage ? (
               <div className="space-y-4">
@@ -171,4 +180,3 @@ export default function PreviewPage() {
     </div>
   );
 }
-

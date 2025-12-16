@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useApp } from '../context/AppContext';
-import ProgressStepper from '../components/ProgressStepper';
-import { useRef, useState } from 'react';
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useApp } from "../context/AppContext";
+import ProgressStepper from "../components/ProgressStepper";
+import { useRef, useState, useEffect } from "react";
 
 export default function UploadPage() {
   const router = useRouter();
@@ -14,38 +14,53 @@ export default function UploadPage() {
     uploadedImage ? URL.createObjectURL(uploadedImage) : null
   );
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setUploadedImage(file);
-      setPreview(URL.createObjectURL(file));
-    }
-  };
+  useEffect(() => {
+    return () => {
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [preview]);
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
-      setUploadedImage(file);
-      setPreview(URL.createObjectURL(file));
+  const createPreview = (file: File) => {
+    // Revoke previous preview URL if it exists
+    if (preview) {
+      URL.revokeObjectURL(preview);
     }
+    setUploadedImage(file);
+    setPreview(URL.createObjectURL(file));
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   };
 
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      createPreview(file);
+    }
+  };
+
   const handleContinue = () => {
     if (uploadedImage) {
-      router.push('/preview');
+      router.push("/preview");
     }
   };
 
   // Redirect if no color selected
   if (!selectedColor) {
-    router.push('/');
+    router.push("/");
     return null;
   }
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      createPreview(file);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-linear-to-b from-purple-50/30 via-white to-white">
@@ -68,7 +83,7 @@ export default function UploadPage() {
             Try On Your Perfect Bandana
           </h1>
           <p className="text-lg text-gray-600">
-            See how you'll look in our handmade crochet bandanas
+            See how you&apos;ll look in our handmade crochet bandanas
           </p>
         </div>
 
@@ -107,9 +122,7 @@ export default function UploadPage() {
                   height={300}
                   className="mx-auto rounded-lg object-cover"
                 />
-                <p className="text-sm text-gray-600">
-                  Click to change photo
-                </p>
+                <p className="text-sm text-gray-600">Click to change photo</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -118,9 +131,7 @@ export default function UploadPage() {
                   <p className="text-lg font-medium text-gray-700 mb-2">
                     Drag and drop your photo here
                   </p>
-                  <p className="text-sm text-gray-500">
-                    or click to browse
-                  </p>
+                  <p className="text-sm text-gray-500">or click to browse</p>
                 </div>
               </div>
             )}
@@ -132,8 +143,8 @@ export default function UploadPage() {
             disabled={!uploadedImage}
             className={`w-full py-3 px-6 rounded-full font-semibold transition-all ${
               uploadedImage
-                ? 'bg-linear-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 shadow-lg hover:shadow-xl'
-                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                ? "bg-linear-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 shadow-lg hover:shadow-xl"
+                : "bg-gray-200 text-gray-400 cursor-not-allowed"
             }`}
           >
             Continue
@@ -148,4 +159,3 @@ export default function UploadPage() {
     </div>
   );
 }
-
