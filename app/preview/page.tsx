@@ -71,13 +71,13 @@ export default function PreviewPage() {
   };
 
   const handleTryAnotherColor = () => {
-    setGeneratedImage(null); // Clear the AI result only
-    router.push("/"); // Return to Step 1 (Color Selection)
+    setGeneratedImage(null); 
+    router.push("/"); 
   };
 
   const handleStartOver = () => {
     setGeneratedImage(null);
-    setUploadedImage(null); // Completely clear the session
+    setUploadedImage(null); 
     router.push("/");
   };
 
@@ -120,7 +120,6 @@ export default function PreviewPage() {
                 />
 
                 <div className="flex flex-col gap-3">
-                  {/* 1. Primary Action: Download */}
                   <button
                     onClick={handleDownload}
                     className="w-full py-3 px-6 rounded-full font-semibold bg-linear-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 shadow-lg transition-all"
@@ -129,7 +128,6 @@ export default function PreviewPage() {
                   </button>
 
                   <div className="flex gap-3">
-                    {/* 2. Secondary Action: Keep Image, change color */}
                     <button
                       onClick={handleTryAnotherColor}
                       className="flex-1 py-3 px-6 rounded-full font-semibold border-2 border-purple-500 text-purple-600 hover:bg-purple-50 transition-all"
@@ -137,7 +135,6 @@ export default function PreviewPage() {
                       Try Another Color
                     </button>
 
-                    {/* 3. Reset Action: Back to main page */}
                     <button
                       onClick={handleStartOver}
                       className="flex-1 py-3 px-6 rounded-full font-semibold border-2 border-gray-300 text-gray-700 hover:border-gray-400 transition-all"

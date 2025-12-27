@@ -22,7 +22,6 @@ export default function UploadPage() {
     };
   }, [preview]);
 
-  // Redirect if no color selected
   useEffect(() => {
     if (!selectedColor) {
       router.push("/");
@@ -30,7 +29,6 @@ export default function UploadPage() {
   }, [selectedColor, router]);
 
   const createPreview = (file: File) => {
-    // Revoke previous preview URL if it exists
     if (preview) {
       URL.revokeObjectURL(preview);
     }
@@ -56,7 +54,6 @@ export default function UploadPage() {
     }
   };
 
-  // Don't render if no color selected (redirecting)
   if (!selectedColor) {
     return null;
   }
@@ -71,7 +68,6 @@ export default function UploadPage() {
   return (
     <div className="min-h-screen bg-linear-to-b from-purple-50/30 via-white to-white">
       <div className="container mx-auto px-4 py-8">
-        {/* Logo */}
         <div className="flex justify-center mb-8">
           <Image
             src="/crochet-studio-logo.png"
@@ -83,7 +79,6 @@ export default function UploadPage() {
           />
         </div>
 
-        {/* Title and Subtitle */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
             Try On Your Perfect Bandana
@@ -93,19 +88,16 @@ export default function UploadPage() {
           </p>
         </div>
 
-        {/* Progress Stepper */}
         <ProgressStepper currentStep={2} />
 
-        {/* Main Card */}
         <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            Step 2: Upload Your Photo
+            Step 2: Upload Your Photo {uploadedImage?.name}
           </h2>
           <p className="text-gray-600 mb-8">
             Upload a clear headshot to see how the bandana looks on you
           </p>
 
-          {/* Upload Area */}
           <div
             onDrop={handleDrop}
             onDragOver={handleDragOver}
@@ -143,7 +135,6 @@ export default function UploadPage() {
             )}
           </div>
 
-          {/* Continue Button */}
           <button
             onClick={handleContinue}
             disabled={!uploadedImage}
@@ -157,7 +148,6 @@ export default function UploadPage() {
           </button>
         </div>
 
-        {/* Footer */}
         <div className="text-center mt-12 text-sm text-gray-500">
           Made with love by Crochet Studio
         </div>

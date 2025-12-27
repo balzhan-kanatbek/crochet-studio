@@ -29,7 +29,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-linear-to-b from-purple-50/30 via-white to-white">
       <div className="container mx-auto px-4 py-8">
-        {/* Logo */}
         <div className="flex justify-center mb-8">
           <Image
             src="/crochet-studio-logo.png"
@@ -41,7 +40,6 @@ export default function Home() {
           />
         </div>
 
-        {/* Title and Subtitle */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
             Try On Your Perfect Bandana
@@ -51,10 +49,8 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Progress Stepper */}
         <ProgressStepper currentStep={1} />
 
-        {/* Main Card */}
         <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-2">
             Step 1: Choose Your Color
@@ -63,7 +59,6 @@ export default function Home() {
             Select the bandana color you&apos;d like to try on
           </p>
 
-          {/* Color Grid */}
           <div className="grid grid-cols-4 gap-6 mb-8">
             {colors.map((color) => (
               <button
@@ -90,7 +85,6 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Continue Button */}
           <button
             onClick={handleContinue}
             disabled={!selectedColor}
@@ -104,7 +98,6 @@ export default function Home() {
           </button>
         </div>
 
-        {/* Footer */}
         <div className="text-center mt-12 text-sm text-gray-500">
           Made with love by Crochet Studio
         </div>

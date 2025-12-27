@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenAI } from "@google/genai"; // Ensure you have installed @google/genai
+import { GoogleGenAI } from "@google/genai"; 
 import fs from "fs";
 import path from "path";
 
@@ -16,10 +16,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Initialize with your secure API key from .env.local
     const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_AI_API_KEY });
 
-    // Load and convert reference pattern
     const designImagePath = path.join(
       process.cwd(),
       "public",
@@ -27,37 +25,38 @@ export async function POST(request: NextRequest) {
     );
     const designBase64 = fs.readFileSync(designImagePath).toString("base64");
 
-    // Convert user's headshot
     const userBuffer = await userImage.arrayBuffer();
     const userBase64 = Buffer.from(userBuffer).toString("base64");
 
-    const promptText = `Create an ultra-high-quality professional fashion photo. 
-      Take the exact crochet stitch from the first image and change the yarn color to ${color}. 
-      - Generate ONLY ONE crochet bandana and place it accurately on the person's head from the second image.
-      - The bandana MUST be positioned on the top of the head, so the part of the forehead hair is visible.
-      - Ensure the bandana wraps symmetrically around both sides of the skull and covers the top of the ears the ears.
-      - NEGATIVE CONSTRAINT: Do not add any secondary bandanas, scarves, or crochet fabric around the neck.
-      - The person's original collar and neck area must remain completely visible and unchanged.`;
+    const promptText = `Perform a strict in-painting operation on the provided photograph of the person (image 2).
+  - BASE IMAGE CONSTRAINT: The original image of the person is the immutable base layer. Their facial features, identity, skin texture, hair color/style, clothing, and the background MUST NOT BE ALTERED.
+  - PRIMARY TASK: Generate a single handmade crochet bandana (using stitch pattern from image 1, color ${color}) and layer it realistically onto the head.
+  - PLACEMENT RULES: The bandana sits on the crown of the head, further back from the forehead. The front section of hair and the natural part must remain visible *in front* of the bandana.
+  - INTEGRATION: The crochet fabric should appear to sit upon and slightly compress the hair underneath it. Only generate the pixels necessary for the bandana itself and the immediate shadows it casts on the hair.
+  - NEGATIVE CONSTRAINT: Do not regenerate the face. Do not add anything to the neck or collar area.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-pro-image-preview", // Target Nano Banana Pro
+      model: "gemini-3-pro-image-preview", 
       contents: [
         {
           role: "user",
           parts: [
-            { inlineData: { data: designBase64, mimeType: "image/jpeg" } },
-            { inlineData: { data: userBase64, mimeType: userImage.type } },
+            {
+              inlineData: {
+                data: designBase64,
+                mimeType: "image/jpeg",
+              },
+            }, 
+            { inlineData: { data: userBase64, mimeType: userImage.type } }, 
             { text: promptText },
           ],
         },
       ],
       config: {
-        // Set response modalities to ensure an image is returned
-        responseModalities: ["IMAGE"],
+        responseModalities: ["IMAGE"], 
       },
     });
 
-    // Extract image data from the response candidates
     const generatedPart = response.candidates?.[0]?.content?.parts?.find(
       (p) => p.inlineData
     );
