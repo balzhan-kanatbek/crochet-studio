@@ -22,6 +22,13 @@ export default function UploadPage() {
     };
   }, [preview]);
 
+  // Redirect if no color selected
+  useEffect(() => {
+    if (!selectedColor) {
+      router.push("/");
+    }
+  }, [selectedColor, router]);
+
   const createPreview = (file: File) => {
     // Revoke previous preview URL if it exists
     if (preview) {
@@ -49,9 +56,8 @@ export default function UploadPage() {
     }
   };
 
-  // Redirect if no color selected
+  // Don't render if no color selected (redirecting)
   if (!selectedColor) {
-    router.push("/");
     return null;
   }
 
