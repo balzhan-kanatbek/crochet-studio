@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useApp } from "../context/AppContext";
 import ProgressStepper from "../components/ProgressStepper";
@@ -85,20 +86,22 @@ export default function PreviewPage() {
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
         <div className="flex justify-center mb-4 sm:mb-8">
-          <Image
-            src="/crochet-studio-logo.png"
-            alt="Crochet Studio"
-            width={200}
-            height={60}
-            className="h-auto w-32 sm:w-48"
-            priority
-          />
+          <Link href="/" className="cursor-pointer">
+            <Image
+              src="/crochet-studio-logo.png"
+              alt="Crochet Studio"
+              width={200}
+              height={60}
+              className="h-auto w-32 sm:w-48"
+              priority
+            />
+          </Link>
         </div>
 
         <ProgressStepper currentStep={3} />
 
-        <div className="max-w-2xl mx-auto bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 md:p-8">
-          <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-2 sm:mb-4">
+        <div className="max-w-2xl mx-2 sm:mx-4 md:mx-auto bg-fuchsia-50 rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 md:p-8 my-4 sm:my-6 md:my-8">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-2 sm:mb-4 ">
             Step 3: Preview Your Look
           </h2>
 
